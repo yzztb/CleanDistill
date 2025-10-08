@@ -5,7 +5,7 @@ The code is based on [ZSKT](https://github.com/polo5/ZeroShotKnowledgeTransfer).
 ## Run Experiments
 
 General
-* Single experiment. Distill from a `badnet_grid`-backoored teacher with arch WRN-16-2 to student with arch WRN-16-1.
+* Single experiment. Distill from a `badnet_sq`-backoored teacher with arch WRN-16-2 to student with arch WRN-16-1.
     ```shell
     export CUDA_VISIBLE_DEVICES=0  # specify GPU
     python main.py --dataset=CIFAR10 --teacher_architecture=WRN-16-2 --student_architecture=WRN-16-1 --trigger_pattern=badnet_grid --seeds=3
@@ -19,22 +19,19 @@ General
     `wandb agent <>` can be run in parallel in different processes, which will auto select different params in `yml` file.
 
 
+
 ## Distill from poisoned teachers
 
 Evaluate different backdoors with ZSKT.
+rename solver_zskt.py to solver.py and run the following:
 ```sh
-wandb sweep sweeps/cifar10_wrn_poi.yml
-wandb sweep sweeps/gtsrb_wrn_poi.yml
+python main_lf.py
 ```
-
-Distill using clean data
-```shell
-# single run
-python kd_distill.py --trigger_pattern=badnet_grid --no_log
-wandb sweep sweeps/cifar10_wrn_poi_distill.yml
-wandb sweep sweeps/gtsrb_wrn_poi_distill.yml
+Test backdoor target:
+rename solver_bti.py to solver.py and run:
+```sh
+python main_lf.py
 ```
-
 ### Customization
 
 **Add dataset**:
@@ -45,12 +42,7 @@ Edit `zskt/models/selector.py` to add new architecture and pre-trained model pat
 
 ## Defense
 
-* CIFAR10
-```shell
-wandb sweep sweeps/cifar10_wrn_poi_defense.yml
-```
-
-* GTSRB
-```shell
-wandb sweep sweeps/gtsrb_wrn_poi_defense.yml
+rename solver_cleandistill.py to solver.py and run:
+```sh
+python main_lf.py
 ```
